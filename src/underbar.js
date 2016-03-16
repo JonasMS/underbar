@@ -200,11 +200,11 @@
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
     // TIP: Try re-using reduce() here.
-    var func;
-    iterator === undefined ? func = function(el){ return el;} : func = iterator; 
+    var func = (iterator === undefined) ? function(el){ return el;} : iterator; 
 
     return _.reduce(collection, function(allTrue, item){
       if(!allTrue){ return false; }
+      // return func(item);
       if(func(item)){ 
         return true;
       } else { return false; } 
@@ -213,8 +213,19 @@
 
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
+
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
+    // some === atLeastOne AND !every
+    var wasTruthy = false;
+    var func = (iterator === undefined) ? function(el){ return el; } : iterator; 
+
+    _.each(collection, function(el){
+      if(func(el)){ wasTruthy = true; }
+      // if(wasTruthy){ return true; }
+      // return false;
+    });
+    return wasTruthy;
   };
 
 
@@ -237,11 +248,39 @@
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
   _.extend = function(obj) {
+    var keysArr = [];
+    var addedObj = {};
+
+    for(var i = 1; i < arguments.length; i++){
+      keysArr = Object.keys(arguments[i]);
+      addedObj = arguments[i];
+
+      _.each(keysArr, function(el){
+        obj[el] = addedObj[el]; 
+      });
+
+    }
+    return obj;
   };
 
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
   _.defaults = function(obj) {
+    var keysArr = [];
+    var addedObj = {};
+
+    for(var i = 1; i < arguments.length; i++){
+      keysArr = Object.keys(arguments[i]);
+      addedObj = arguments[i];
+
+      _.each(keysArr, function(el){
+        if(!_.contains(Object.keys(obj), el)){
+        obj[el] = addedObj[el]; 
+        }
+      });
+      
+    }
+    return obj;
   };
 
 
