@@ -323,7 +323,38 @@
   // _.memoize should return a function that, when called, will check if it has
   // already computed the result for the given argument and return that value
   // instead if possible.
+
+  /*
+    Problem: Memoize is passed in a function. If the function has been called 
+    with the same arguments before, then memoize returns the result from the 
+    previous identical call.
+
+    Solution: 
+      1. check if arguments are in argsList
+      2. IF NOT, run the function AND store the arguments in argsList
+
+  */
   _.memoize = function(func) {
+    var argsList = [];
+    var resultsList = [];
+    var result;
+    var alreadyCalled = false;
+
+    
+    
+    return function() {
+      result = (_.contains(argsList, arguments));
+
+      if(result === false){
+
+        result = func.apply(this, arguments);
+        argsList.push(arguments);
+        resultsList.push(result);
+
+      } else { result = resultsList[result]; }
+      
+      return result;  
+    }; 
   };
 
   // Delays a function for the given number of milliseconds, and then calls
@@ -347,7 +378,28 @@
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
+    var newArr = array.slice(0);
+    var randArr = [];
+    var randIdx;
+
+    while(newArr.length > 0){
+      randIdx = getRandom(0, newArr.length);
+      randArr.push(newArr[randIdx]);
+      newArr = removeSpecific(newArr, randIdx);
+    }
+    return randArr;
   };
+
+var removeSpecific = function(arr, idx){
+      arr = [].concat(arr.slice(0, idx), arr.slice(idx+1));
+      return arr;
+    }
+
+var getRandom = function(min, max){
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+  
+  
 
 
   /**
