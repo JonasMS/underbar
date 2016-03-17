@@ -57,7 +57,7 @@
         iterator(collection[key], key, collection);
       }
     }
-    return
+    return;
   };
 
   // Returns the index at which value can be found in the array, or -1 if value
@@ -173,9 +173,9 @@
 
   _.reduce = function(collection, iterator, accumulator) {
     var val; 
-    var newCollection = collection.slice(0);
+    var newCollection = (Array.isArray(collection)) ? collection.slice(0) : collection;
 
-    accumulator === undefined ? val = newCollection.shift() : val = accumulator;
+    var val = (accumulator === undefined) ? newCollection.shift() : accumulator;
 
     _.each(newCollection, function(el) {
       val = iterator(val, el);
@@ -188,12 +188,18 @@
   _.contains = function(collection, target) {
     // TIP: Many iteration problems can be most easily expressed in
     // terms of reduce(). Here's a freebie to demonstrate!
-    return _.reduce(collection, function(wasFound, item) {
-      if (wasFound) {
-        return true;
-      }
-      return item === target;
-    }, false);
+    // if(typeof Array.isArray(collection)){
+
+      return _.reduce(collection, function(wasFound, item) {
+        if (wasFound) {
+          return true;
+        }
+        return item === target;
+      }, false);
+
+    // } else if (typeof collection === 'object') {
+      
+    // }
   };
 
 
@@ -337,15 +343,22 @@
   _.memoize = function(func) {
     var argsList = [];
     var resultsList = [];
+    var key;
     var result;
     var alreadyCalled = false;
 
     
+
+    
     
     return function() {
-      result = (_.contains(argsList, arguments));
 
-      if(result === false){
+      key = [];
+      for(var j in arguments){ key = (arguments[j]); }
+
+      result = _.contains(argsList, key)
+
+      if(!result){
 
         result = func.apply(this, arguments);
         argsList.push(arguments);
@@ -364,6 +377,7 @@
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
+
   };
 
 
