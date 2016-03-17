@@ -341,31 +341,19 @@
 
   */
   _.memoize = function(func) {
-    var argsList = [];
-    var resultsList = [];
-    var key;
+    var argsList = {};
+    var val;
     var result;
-    var alreadyCalled = false;
 
-    
-
-    
-    
     return function() {
-
-      key = [];
-      for(var j in arguments){ key = (arguments[j]); }
-
-      result = _.contains(argsList, key)
+      for(var j in arguments){ val = (arguments[j]); }
+      result = argsList.hasOwnProperty(val);
 
       if(!result){
-
         result = func.apply(this, arguments);
-        argsList.push(arguments);
-        resultsList.push(result);
-
-      } else { result = resultsList[result]; }
-      
+        argsList[val] = result;
+        
+      } else { result = argsList[val]; }  
       return result;  
     }; 
   };
