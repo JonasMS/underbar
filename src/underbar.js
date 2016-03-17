@@ -343,18 +343,16 @@
   _.memoize = function(func) {
     var argsList = {};
     var val;
-    var result;
+    var hasPassed;
 
     return function() {
-      for(var j in arguments){ val = (arguments[j]); }
-      result = argsList.hasOwnProperty(val);
+      for(var key in arguments){ val = (arguments[key]); }
+      hasPassed = argsList.hasOwnProperty(val);
 
-      if(!result){
-        result = func.apply(this, arguments);
-        argsList[val] = result;
-        
-      } else { result = argsList[val]; }  
-      return result;  
+      if(!hasPassed){
+        argsList[val] = func.apply(this, arguments);
+      } 
+      return argsList[val];  
     }; 
   };
 
@@ -365,7 +363,16 @@
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
-
+    var args = [];
+    for(var i = 2; i < arguments.length; i++){
+      args.push(arguments[i]);
+    }
+         
+    setTimeout(function(argumentList) {
+    func.apply(this, argumentList);
+      
+    }, wait, args);
+    return;
   };
 
 
