@@ -422,6 +422,21 @@ var getRandom = function(min, max){
   // Calls the method named by functionOrKey on each value in the list.
   // Note: You will need to learn a bit about .apply to complete this.
   _.invoke = function(collection, functionOrKey, args) {
+    var result = [];
+
+    var wrap = function() {
+      if (typeof functionOrKey === 'string'){
+        _.each(collection, function(el) {
+          result.push(el[functionOrKey]());
+        });
+      } else {_.each(collection, function(el) {
+        result.push(functionOrKey.apply(el));
+        });
+      }
+      return result;
+    };
+
+    return wrap();
   };
 
   // Sort the object's values by a criterion produced by an iterator.
