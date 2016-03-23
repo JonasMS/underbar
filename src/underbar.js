@@ -443,7 +443,61 @@ var getRandom = function(min, max){
   // If iterator is a string, sort objects by that property with the name
   // of that string. For example, _.sortBy(people, 'name') should sort
   // an array of people by their name.
+
+  /*
+    Problem: sort each element in 'collection', from lowestVal to highestVal, of collection[iterator]
+    Solution: 
+      1. find lowest specified val in collection
+      2. push val to result
+      3. remove val from collection
+
+    curEl = collection[x]
+    nextEl = collection[x+1]
+
+    A: curEl[iterator] < nextEl[iterator]
+    B: swap positions of curEl and nextEl
+
+  */
   _.sortBy = function(collection, iterator) {
+    var copy = collection.slice(0);
+    var result = [];
+    var idx;
+
+    var sort = function() {
+      while(result.length < collection.length){
+        idx = findLow(copy, iterator);
+        result.push(copy[idx]);
+        copy = removeEl(copy, idx);
+      }
+      // return result;
+    };
+
+    sort();
+    return result;
+  };
+
+  //returns the index of the lowest value in collection
+  var findLow = function(collection, iterator){
+    var valIdx;
+    var curVal;
+    var lowVal;
+
+    _.each(collection, function(el, idx){
+      curVal = (typeof iterator === 'string') ?  el[iterator] : iterator(el);
+      if(lowVal === undefined || curVal < lowVal){
+        lowVal = curVal;
+        valIdx = idx;
+      }
+    });
+   return valIdx;
+  };
+
+  var removeEl = function(collection, idx){
+    for(var i = idx; i < collection.length-1; i++){
+      collection[i] = collection[i+1];
+    }
+    collection.pop();
+    return collection;
   };
 
   // Zip together two or more arrays with elements of the same index
