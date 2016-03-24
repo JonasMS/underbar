@@ -461,18 +461,49 @@ var getRandom = function(min, max){
   _.sortBy = function(collection, iterator) {
     var copy = collection.slice(0);
     var result = [];
+    var limit = collection.length;
     var idx;
 
-    var sort = function() {
-      while(result.length < collection.length){
-        idx = findLow(copy, iterator);
-        result.push(copy[idx]);
-        copy = removeEl(copy, idx);
-      }
-      // return result;
-    };
+    
+    while(result.length < collection.length){
+      idx = findLow(copy, iterator);
+      result.push(copy[idx]);
+      copy = removeEl(copy, idx);
 
-    sort();
+
+      if(!isDefined(copy[0], iterator, copy) && !hasDefined(copy, iterator)){
+        _.each(copy, function(el){
+          result.push(el);
+        });
+      }
+    }
+  
+    return result;
+  };
+
+  //helper functions
+  //comparison
+  var fnOrKey = function(el, iterator){
+    return (typeof iterator === 'string') ? el[iterator] : iterator(el);
+  };
+
+  //isDefined and hasDefined are used to handle undefined values 
+  //in arrays passed into _.sortBy
+  var isDefined = function(el, iterator, collection){
+    if(collection.length){
+      var val = fnOrKey(el, iterator);
+      return (val === undefined) ? false : true;
+    }
+  };
+
+  var hasDefined = function(collection, iterator) {
+    var result = false;
+    
+    _.each(collection, function(el){
+      if(isDefined(el, iterator, collection)){
+        result = true;
+      }
+    });
     return result;
   };
 
@@ -483,8 +514,9 @@ var getRandom = function(min, max){
     var lowVal;
 
     _.each(collection, function(el, idx){
-      curVal = (typeof iterator === 'string') ?  el[iterator] : iterator(el);
-      if(lowVal === undefined || curVal < lowVal){
+      curVal = fnOrKey(el, iterator);
+
+       if(lowVal === undefined || curVal < lowVal){
         lowVal = curVal;
         valIdx = idx;
       }
