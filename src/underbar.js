@@ -402,11 +402,11 @@
 var removeSpecific = function(arr, idx){
       arr = [].concat(arr.slice(0, idx), arr.slice(idx+1));
       return arr;
-    }
+    };
 
 var getRandom = function(min, max){
   return Math.floor(Math.random() * (max - min)) + min;
-}
+};
   
   
 
@@ -537,8 +537,47 @@ var getRandom = function(min, max){
   //
   // Example:
   // _.zip(['a','b','c','d'], [1,2,3]) returns [['a',1], ['b',2], ['c',3], ['d',undefined]]
+/*
+  Problem: create an array of arrays. sub-arrays contain the elements of n-index
+  of each passed-in array
+  Solution: 
+    1. find longest array
+    2. for longArr.length, place el of n-index into nIndex for each array
+      3. push nIndex into result
+      4. clear nIndex
+    5. return result
+*/
+
   _.zip = function() {
+    var result = [];
+    var nIndex = [];
+    var targetArr;
+
+    //find longest array by sorting array by length
+    //and picking the last el
+    var argsArr = argsToArr(arguments);
+    var byLength = (_.sortBy(argsArr, 'length'));
+
+    for(var i = 0; i < byLength[byLength.length-1].length; i++){
+      _.each(arguments, function(curArr){
+        nIndex.push(curArr[i]);
+      });
+      result.push(nIndex);
+      nIndex = [];
+    }
+    
+    return result;
+
   };
+
+  var argsToArr = function(args){
+    var argsArr = [];
+    for(var key in args){
+      argsArr.push(args[key]);
+    }
+    return argsArr;
+  };
+
 
   // Takes a multidimensional array and converts it to a one-dimensional array.
   // The new array should contain all elements of the multidimensional array.
