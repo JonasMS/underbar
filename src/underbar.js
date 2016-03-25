@@ -583,12 +583,68 @@ var getRandom = function(min, max){
   // The new array should contain all elements of the multidimensional array.
   //
   // Hint: Use Array.isArray to check if something is an array
+/*
+  Problem: return all passed-in values in a single array
+  Solution:
+    1. loop over each element in 'nestedArray'
+    2. IF an element isArray, loop over every element in the element
+      3. ELSE, push element to 'result' 
+*/
+
+
   _.flatten = function(nestedArray, result) {
+    if(result === undefined) { result = []; }
+
+    _.each(nestedArray, function(el){
+      if(Array.isArray(el)){
+        _.flatten(el, result);
+      } else {  result.push(el); } 
+    });
+
+    return result;
   };
 
   // Takes an arbitrary number of arrays and produces an array that contains
   // every item shared between all the passed-in arrays.
+  /*
+    Solution: compare each el in the first passed-in array with each el in 
+    each 1+n passed-in array
+      1. compare array 1 with array 1+0
+        2. IF el's match, compare el in next array (e.g. array 1+1)
+        3. ELSE compare next el in array 1 
+  */
   _.intersection = function() {
+    var i = 0;
+    var firstArg = arguments[0];
+    var nArgs = getArgs(arguments, 1); 
+    var matches = [];
+
+    _.each(firstArg, function(el){
+      //IF el can be found in the current array
+      //check the next array
+      while(_.indexOf(nArgs[i], el) > -1){
+        i++;
+        //IF the comparison operation has gone through all the arrays
+        //THEN el is found in all the arrays
+        if(i >= nArgs.length){ 
+          matches.push(el); 
+          break;
+        }
+      }
+      i = 0;
+    });
+    return matches;
+  };
+
+  //Helper Function
+  //returns an array of all the elements in the arguments object
+  //starting with a specified index, 'start'
+  var getArgs = function(args, start){
+    var argsList = [];
+    for(var i = start; i < args.length; i++){
+      argsList.push(args[i]);
+    }
+    return argsList;
   };
 
   // Take the difference between one array and a number of other arrays.
