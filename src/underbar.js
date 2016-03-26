@@ -649,7 +649,30 @@ var getRandom = function(min, max){
 
   // Take the difference between one array and a number of other arrays.
   // Only the elements present in just the first array will remain.
+
+
+  /*
+    Solution:
+      1. compare el of array 1 to els of array 1+n
+        2. IF el is NOT present in any array, THEN push el into result
+        3. ELSE move onto next el of array 1
+  */
   _.difference = function(array) {
+    var result = [];
+    var nArrs = getArgs(arguments, 1);
+    var i = 0;
+
+    _.each(array, function(el){
+      while(_.indexOf(nArrs[i], el) === -1){
+        i++;
+        if(i >= nArrs.length){
+          result.push(el);
+          break;
+        }
+      }
+      i = 0;
+    });
+    return result;
   };
 
   // Returns a function, that, when invoked, will only be triggered at most once
